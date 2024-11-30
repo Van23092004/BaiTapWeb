@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đọc và Hiển Thị Tệp CSV</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Đọc và Hiển Thị Dữ Liệu từ Tệp CSV</h1>
+    
+    <input type="file" id="fileInput" accept=".csv" />
+    <br><br>
+    <table id="csvTable">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Lastname</th>
+                <th>Firstname</th>
+                <th>City</th>
+                <th>Email</th>
+                <th>Course</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script>
+        document.getElementById("fileInput").addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                parseCSV(file);
+            }
+        });
+
+        function parseCSV(file) {
+            Papa.parse(file, {
+                complete: function(results) {
+                    const tableBody = document.querySelector("#csvTable tbody");
+                    tableBody.innerHTML = "";
+                    results.data.forEach((row, index) => {
+                        if (row.some(cell => cell !== "")) {
+                            const rowElement = document.createElement("tr");
+                            row.forEach(cell => {
+                                const cellElement = document.createElement("td");
+                                cellElement.textContent = cell;
+                                rowElement.appendChild(cellElement);
+                            });
+                            tableBody.appendChild(rowElement);
+                        }
+                    });
+                },
+                header: false, 
+                skipEmptyLines: true 
+            });
+        }
+    </script>
+</body>
+</html>
